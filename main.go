@@ -9,12 +9,18 @@ import (
 )
 
 func main() {
-	var buf interface{}
-	if err := gRlp.DecodeBytes([]byte{0x81, 0x81}, &buf); err != nil {
+	// var buf interface{}
+	// if err := gRlp.DecodeBytes([]byte{0x81, 0x81}, &buf); err != nil {
+	//         fmt.Printf("error: %s\n", err)
+	//         return
+	// }
+	// fmt.Println(buf)
+	enc, err := gRlp.EncodeToBytes([]byte{})
+	if err != nil {
 		fmt.Printf("error: %s\n", err)
 		return
 	}
-	fmt.Println(buf)
+	fmt.Println(enc)
 	utils.Equal([]byte{}, []byte{})
 	_ = rlp.DataItem
 }

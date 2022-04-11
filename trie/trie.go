@@ -140,7 +140,6 @@ func parseProof(proof []byte) []TrieNode {
 	out := make([]TrieNode, 0, len(nodes))
 	for _, node := range nodes {
 		encoded := rlp.ReadBytes(node)
-		// TODO: why is this reading the list that was just encoded?
 		out = append(out, TrieNode{encoded: encoded, decoded: rlp.ReadListBytes(encoded)})
 	}
 	return out
@@ -158,7 +157,7 @@ func getNodePath(node TrieNode) []byte {
 }
 
 func getNodeValue(node TrieNode) []byte {
-	rlp.ReadBytes(node.decoded[len(node.decoded)-1])
+	return rlp.ReadBytes(node.decoded[len(node.decoded)-1])
 }
 
 func getSharedNibbleLength(a, b []byte) uint64 {

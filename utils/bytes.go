@@ -27,7 +27,6 @@ func Slice(bytes []byte, start uint64, length uint64) []byte {
 
 func SliceEnd(bytes []byte, start uint64) []byte {
 	// If the start of the slice is outside the slice, return an empty slice.
-	// TODO: does this make sense?
 	if start >= uint64(len(bytes)) {
 		return []byte{}
 	}

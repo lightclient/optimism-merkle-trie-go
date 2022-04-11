@@ -86,7 +86,6 @@ func ReadBytes32(in RLPItem) common.Hash {
 		panic("invalid bytes32 value")
 	}
 	itemOffset, itemLength, itemType := decodeLength(in)
-	// TODO: why isn't item length checked?
 	if itemType != DataItem {
 		panic("expected data item, got list")
 	}
