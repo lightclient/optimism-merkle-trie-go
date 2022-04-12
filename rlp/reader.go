@@ -46,7 +46,7 @@ func ReadList(in RLPItem) []RLPItem {
 			Length: in.Length - offset,
 			ptr:    in.ptr[offset:],
 		})
-		out = append(out, RLPItem{Length: itemLength + 1, ptr: in.ptr[offset:]})
+		out = append(out, RLPItem{Length: itemLength, ptr: in.ptr[offset:]})
 		itemCount += 1
 		offset += itemOffset + itemLength
 		if offset >= in.Length {
@@ -65,8 +65,8 @@ func ReadBytes(in RLPItem) []byte {
 	if itemType != DataItem {
 		panic("expected RLP string")
 	}
-	// TODO: does this need to be copied?
-	return in.ptr[itemOffset : itemOffset+itemLength]
+	// Add 1 for go slicing
+	return in.ptr[itemOffset : itemOffset+itemLength+1]
 }
 
 func ReadBytesBytes(in []byte) []byte {
@@ -89,7 +89,8 @@ func ReadBytes32(in RLPItem) common.Hash {
 	if itemType != DataItem {
 		panic("expected data item, got list")
 	}
-	return common.BytesToHash(in.ptr[itemOffset : itemOffset+itemLength])
+	// Add 1 for go slicing
+	return common.BytesToHash(in.ptr[itemOffset : itemOffset+itemLength+1])
 }
 
 func ReadBytes32Bytes(in []byte) common.Hash {
