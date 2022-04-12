@@ -46,7 +46,7 @@ func ReadList(in RLPItem) []RLPItem {
 			Length: in.Length - offset,
 			ptr:    in.ptr[offset:],
 		})
-		out = append(out, RLPItem{Length: itemLength, ptr: in.ptr[offset:]})
+		out = append(out, RLPItem{Length: itemLength + 1, ptr: in.ptr[offset:]})
 		itemCount += 1
 		offset += itemOffset + itemLength
 		if offset >= in.Length {
@@ -163,7 +163,9 @@ func decodeLength(in RLPItem) (uint64, uint64, RLPItemType) {
 		if in.Length < lenOfStrLen {
 			panic("expected length of string length exceeds actual")
 		}
-		strLen := binary.BigEndian.Uint64(in.ptr[1:lenOfStrLen])
+		buf := make([]byte, 8, 8)
+		copy(buf, in.ptr[1:lenOfStrLen+1])
+		strLen := binary.LittleEndian.Uint64(buf)
 		if in.Length < lenOfStrLen+strLen {
 			panic("expected string length exceeds actual")
 		}
@@ -178,13 +180,15 @@ func decodeLength(in RLPItem) (uint64, uint64, RLPItemType) {
 	default:
 		// Long list
 		lenOfListLen := uint64(prefix - 0xb7)
-		if in.Length > lenOfListLen {
+		if in.Length < lenOfListLen {
 			panic("expected length of list length exceeds actual")
 		}
-		listLen := binary.BigEndian.Uint64(in.ptr[1:lenOfListLen])
+		buf := make([]byte, 8, 8)
+		copy(buf, in.ptr[1:lenOfListLen+1])
+		listLen := binary.LittleEndian.Uint64(buf)
 		if in.Length < lenOfListLen+listLen {
 			panic("expected list length exceeds actual")
 		}
-		return 1 + lenOfListLen, listLen, DataItem
+		return 1 + lenOfListLen, listLen, ListItem
 	}
 }

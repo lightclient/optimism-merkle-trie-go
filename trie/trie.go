@@ -40,10 +40,10 @@ func VerifyInclusionProof(key, expected, proof []byte, root common.Hash) bool {
 
 func Get(key, proof []byte, root common.Hash) (bool, []byte) {
 	parsedProof := parseProof(proof)
-	pathLength, keyRemainder, isFinalNode := walkNodePath(parsedProof, key, root)
+	pathLength, keyRemainder, _ := walkNodePath(parsedProof, key, root)
 
 	exists := len(keyRemainder) == 0
-	if !exists || !isFinalNode {
+	if !exists {
 		panic("provided proof is invalid")
 	}
 
@@ -90,7 +90,7 @@ func walkNodePath(proof []TrieNode, compressedKey []byte, root common.Hash) (uin
 				branchKey := key[currentKeyIndex]
 				nextNode := currentNode.decoded[branchKey]
 				currentNodeID = getNodeID(nextNode)
-				currentKeyIncrement += 1
+				currentKeyIncrement = 1
 				continue
 			}
 		} else if len(currentNode.decoded) == LEAF_OR_EXTENSION_NODE_LENGTH {
